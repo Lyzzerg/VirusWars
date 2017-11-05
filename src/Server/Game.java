@@ -107,6 +107,14 @@ public class Game implements GameInterface{
     //проверка доступности хода
     private boolean find(Field field){
 
+        //нельзя ходить в уже занятые тобой клетки
+        if(playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state()==
+                (player ? O : X) ||
+                playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state()==
+                        (player ? XDESTRUCTED : ODESTRUCTED))
+            return false;
+
+
         //первые ходы для каждого игрока
         if(first_player_first_turn && (field.getNumeric_field()==9 && field.getWord_field() == 0)){
             first_player_first_turn = false;
