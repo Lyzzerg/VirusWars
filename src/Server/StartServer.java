@@ -1,9 +1,6 @@
 package Server;
 
-import General.Field;
-import General.GameInterface;
-import General.PrintingInterface;
-import General.Start;
+import General.*;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -13,12 +10,19 @@ import java.util.Scanner;
 /**
  * Created by Евгений on 21.10.2017.
  */
-public class StartServer extends Start {
+public class StartServer extends DefaultMethods {
     private static final boolean MY_PLAYER = false;
 
+
     public static void main(String[] args) {
-        int port = 12345;
-        int port2 = 12346;
+        Connection connection = new Connection();
+
+        Scanner in = new Scanner(System.in);
+
+        connection.ip_init(in);
+        connection.port_init(in);
+        connection.print_ports();
+
         Game game1;
         PrintingInterface toClientPrinter;
         System.out.println("Server Started");
@@ -26,12 +30,10 @@ public class StartServer extends Start {
             game1 = new Game();
 
             //RMI Server registration
-            String serverServiceName = "rmi://localhost/GameInterface";
-            String clientServiceName = "rmi://localhost/PrintingInterface";
 
             GameInterface gameInterface = (GameInterface) UnicastRemoteObject.exportObject(game1, 0);
-            Registry registry1 = LocateRegistry.createRegistry(port);
-            registry1.rebind(serverServiceName, gameInterface);
+            Registry registry1 = LocateRegistry.createRegistry(connection.getServerPort());
+            registry1.rebind(connection.getServerServiceName(), gameInterface);
 
             System.out.println("Waiting Opponent");
 
@@ -39,13 +41,12 @@ public class StartServer extends Start {
             while(!game1.isGame_started()){
                 Thread.sleep(1000);
             }
-            Registry registry2 = LocateRegistry.getRegistry(port2);
-            toClientPrinter = (PrintingInterface) registry2.lookup(clientServiceName);
+            Registry registry2 = LocateRegistry.getRegistry(connection.getClientPort());
+            toClientPrinter = (PrintingInterface) registry2.lookup(connection.getClientServiceName());
 
             System.out.println("Opponent Founded");
 
             Field my_turn = new Field(0,0);
-            Scanner in = new Scanner(System.in);
             String turn = "";
             printDefaultGameField();
             while(!game1.isGameEnded()) {

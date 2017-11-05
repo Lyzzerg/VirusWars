@@ -10,25 +10,29 @@ import java.util.Scanner;
 /**
  * Created by Евгений on 04.11.2017.
  */
-public class StartClient extends Start {
+public class StartClient extends DefaultMethods {
 
     private static boolean MY_PLAYER = true;
 
     public static void main(String[] args){
 
         System.out.println("Client Started");
-        String serverServiceName = "rmi://localhost/GameInterface";
-        String clientServiceName = "rmi://localhost/PrintingInterface";
-        int port = 12345;
-        int port2 = 12346;
+
+        Scanner in = new Scanner(System.in);
+        Connection connection = new Connection();
         GameInterface game1;
         Printer printer;
+
+        connection.ip_init(in);
+        connection.port_init(in);
+        connection.print_ports();
+
         try{
             System.out.println("Connecting to server....");
 
             //RMI Server
-            Registry server_registry = LocateRegistry.getRegistry(port);
-            game1 = (GameInterface) server_registry.lookup(serverServiceName);
+            Registry server_registry = LocateRegistry.getRegistry(connection.getServerPort());
+            game1 = (GameInterface) server_registry.lookup(connection.getServerServiceName());
             System.out.println("Connected");
             game1.startGame();
             System.out.println("Printer Started");
@@ -36,11 +40,10 @@ public class StartClient extends Start {
             //RMI Client registration
             printer = new Printer();
             PrintingInterface printingInterface = (PrintingInterface) UnicastRemoteObject.exportObject(printer,0);
-            Registry registry2 = LocateRegistry.createRegistry(port2);
-            registry2.rebind(clientServiceName, printingInterface);
+            Registry registry2 = LocateRegistry.createRegistry(connection.getClientPort());
+            registry2.rebind(connection.getClientServiceName(), printingInterface);
 
             Field my_turn = new Field(0,0);
-            Scanner in = new Scanner(System.in);
             String turn = "";
             printDefaultGameField();
             while(!game1.isGameEnded()) {
