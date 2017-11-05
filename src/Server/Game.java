@@ -106,6 +106,8 @@ public class Game implements GameInterface{
 
     //проверка доступности хода
     private boolean find(Field field){
+
+        //первые ходы для каждого игрока
         if(first_player_first_turn && (field.getNumeric_field()==9 && field.getWord_field() == 0)){
             first_player_first_turn = false;
             return true;
@@ -151,7 +153,7 @@ public class Game implements GameInterface{
                 }
             }
         }
-        return false;
+        return false; //не найдено ни одного живого вируса
     }
 
     //проверка времени хода
@@ -163,13 +165,13 @@ public class Game implements GameInterface{
     private boolean can_turn(){
         int turns=0;
 
-        if(player ? second_player_first_turn : first_player_first_turn)
+        if(player ? second_player_first_turn : first_player_first_turn) //можно ходить если это первый ход
             return true;
 
         for(int i=0; i<10; i++){
-            for(int j=0; j<10; j++){
+            for(int j=0; j<10; j++){  //смотрим по всему полю
                 if(playing_field[i][j].getCurrent_state()==CLEAR ||
-                        playing_field[i][j].getCurrent_state()==(player ? X : O)){
+                        playing_field[i][j].getCurrent_state()==(player ? X : O)){ //можем ли мы найти 3 допустимых хода
                     if(find(new Field(i,j)))
                         turns++;
                 }
@@ -178,9 +180,9 @@ public class Game implements GameInterface{
 
 
         if(turns>=3){
-            return true;
+            return true; //три допустимых хода найдено
         } else{
-            return false;
+            return false; //не найдено трёх допустимых ходов
         }
     }
 
