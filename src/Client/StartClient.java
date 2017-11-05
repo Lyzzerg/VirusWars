@@ -62,9 +62,9 @@ public class StartClient {
                 } while (!checkwithregexp(turn) && !checkwithregexp2(turn));
                 if (checkwithregexp2(turn)) {
                     System.out.println(game1.concede(MY_PLAYER));
+                    break; //конец игры если сдался
                 } else {
                     my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
-                    //вызвать turn
                     System.out.println(game1.turn(my_turn,MY_PLAYER));
                 }
             }

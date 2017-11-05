@@ -66,7 +66,7 @@ public class StartServer {
                 } while (!checkwithregexp1(turn) && !checkwithregexp2(turn));
                 if(checkwithregexp2(turn)){
                     System.out.println(game1.concede(MY_PLAYER));
-                    break;
+                    break; //конец игры если сдался
                 }
                 my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
                 System.out.println(game1.turn(my_turn, MY_PLAYER));
