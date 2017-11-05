@@ -56,6 +56,7 @@ public class StartClient extends Start {
                 } else {
                     my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
                     System.out.println(game1.turn(my_turn,MY_PLAYER));
+                    game1.printGamingField("");
                 }
             }
         } catch (Exception e){

@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 /**
  * Created by Евгений on 21.10.2017.
  */
-public class Game implements GameInterface{
+public class Game implements GameInterface {
 
     //Here's the Virus Wars Printer Logic//
 
@@ -60,7 +60,7 @@ public class Game implements GameInterface{
                     } else {
                         result= "Ход недопустим\n";
                     }
-                    result = result + printGamingField();
+                    result = result + gamingFieldStatus();
                 } else {
                     winner = player ? 1 : 2; //если текущий игрок O то победили X иначе победили O
                     result = "Игра завершена. У вас нет допустимых ходов. \n Вы проиграли.";
@@ -101,7 +101,7 @@ public class Game implements GameInterface{
         return game_ended;
     }
 
-    public String printGamingField() throws RemoteException {
+    public String gamingFieldStatus() throws RemoteException {
         String result = "";
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -120,6 +120,7 @@ public class Game implements GameInterface{
             result = result +((char) (97 + k) + " ");
         }
         result = result +"\n";
+        //System.out.println(result);
         return result;
     }
 
@@ -226,7 +227,26 @@ public class Game implements GameInterface{
                 ODESTRUCTED);
     }
 
+    @Override
+    public void printGamingField(String result) throws RemoteException {
+        System.out.println(gamingFieldStatus());
+        System.out.println("Введите ход:");
+    }
+
     //Переменные//
+
+    private class PlayingField {
+
+        private int current_state;
+
+        PlayingField() { current_state = CLEAR; }
+
+        public int getCurrent_state() { return current_state; }
+
+        public void setCurrent_state(int current_state) {
+            this.current_state = current_state;
+        }
+    }
 
     private static final boolean FIRST_PLAYER = false;
     private static final int CLEAR = -1;
