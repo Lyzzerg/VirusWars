@@ -21,7 +21,6 @@ public class Game implements GameInterface{
             }
         }
         player = FIRST_PLAYER; // Игрок начавший игру считается игроком делающим первый ход
-        System.out.println(playing_field[2][0]);
         first_player_first_turn = true;
         second_player_first_turn = true;
         marked = new boolean [10][10];

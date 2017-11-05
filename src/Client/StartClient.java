@@ -17,13 +17,20 @@ public class StartClient extends Start{
 
     public static void main(String[] args){
 
+        System.out.println("Client Started");
         String serviceName = "rmi://localhost/GameInterface";
         int port = Integer.parseInt("12345");
         GameInterface game1;
         try{
+            System.out.println("Connecting to server....");
+
+            //RMI
             Registry registry = LocateRegistry.getRegistry(port);
             game1 = (GameInterface) registry.lookup(serviceName);
+            System.out.println("Connected");
             game1.startGame();
+            System.out.println("Game Started");
+
             Field my_turn = new Field(0,0);
             Scanner in = new Scanner(System.in);
             String turn = "";
@@ -44,6 +51,7 @@ public class StartClient extends Start{
                 }
             }
         } catch (Exception e){
+            System.out.println("Client cannot connect to the server");
             e.printStackTrace();
         }
 

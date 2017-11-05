@@ -17,8 +17,10 @@ public class StartServer extends Start{
 
     public static void main(String[] args) {
         Game game1;
+        System.out.println("Server Started");
         try {
             game1 = new Game();
+            System.out.println("Game Created");
 
             //Регистрация в RMI
             String serviceName = "rmi://localhost/GameInterface";
@@ -27,9 +29,11 @@ public class StartServer extends Start{
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind(serviceName, gameInterface);
 
+            System.out.println("Waiting Opponent");
             while(!game1.isGame_started()){
                 Thread.sleep(1000);
             }
+            System.out.println("Opponent Founded");
 
             Field my_turn = new Field(0,0);
             Scanner in = new Scanner(System.in);
@@ -51,6 +55,7 @@ public class StartServer extends Start{
             }
 
         } catch (Exception e) {
+            System.out.println("Server cannot create the game");
             e.printStackTrace();
         }
     }
