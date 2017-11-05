@@ -104,6 +104,7 @@ public class Game implements GameInterface {
         return game_ended;
     }
 
+    //получение текущего состояния поля
     public String gamingFieldStatus() throws RemoteException {
         String result = "";
         for (int i = 0; i < 10; i++) {
@@ -123,10 +124,10 @@ public class Game implements GameInterface {
             result = result +((char) (97 + k) + " ");
         }
         result = result +"\n";
-        //System.out.println(result);
         return result;
     }
 
+    //проверка начала игры
     public boolean isGame_started(){
         return game_started;
     }
@@ -238,6 +239,7 @@ public class Game implements GameInterface {
         System.out.println("Введите ход:");
     }
 
+    //очистка вспомогательного поля для поиска
     private void clearMarked(){
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
@@ -246,8 +248,7 @@ public class Game implements GameInterface {
         }
     }
 
-    //Переменные//
-
+    //Переменные
     private class PlayingField {
 
         private int current_state;
