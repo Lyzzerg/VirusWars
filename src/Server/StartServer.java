@@ -27,24 +27,10 @@ public class StartServer extends Start{
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind(serviceName, gameInterface);
 
-            //Регистрация в RMI
-
             Field my_turn = new Field(0,0);
             Scanner in = new Scanner(System.in);
             String turn = "";
-            for(int i=0; i<10; i++){
-                for(int j=0; j<10; j++){
-                    if(j==0)
-                        System.out.print(i+" ");
-                    System.out.print("| ");
-                }
-                System.out.println("|");
-            }
-            System.out.print("   ");
-            for(int i=0; i<10; i++){
-                System.out.print((char)(97+i) + " ");
-            }
-            System.out.println("");
+            printDefaultGameField();
             while(true) {
                 System.out.println("Введите ход:");
                 do {

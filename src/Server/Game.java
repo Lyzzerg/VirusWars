@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
  */
 public class Game implements GameInterface{
 
-    //Here's the Virus Wars Game Game//
+    //Here's the Virus Wars Game Logic//
 
     //создание игры
     Game() throws RemoteException { // Конструктор
