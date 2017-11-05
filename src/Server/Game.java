@@ -220,8 +220,8 @@ public class Game implements GameInterface{
     private PlayingField[][] playing_field; // Поле игры
     private boolean player; // Текущий игрок
     private boolean [][] marked;  //вспомогательное поле для поиска чейнов
-    private int turn_number;
-    private int winner;
-    private boolean first_player_first_turn;
-    private boolean second_player_first_turn;
+    private int turn_number; // номер хода текущего игрока
+    private int winner; //кто победитель
+    private boolean first_player_first_turn;   //является ли данный ход первым для 1 игрока
+    private boolean second_player_first_turn; //является ли данный ход первым для 2 игрока
 }
