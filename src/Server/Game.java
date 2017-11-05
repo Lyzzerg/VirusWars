@@ -60,7 +60,7 @@ public class Game implements GameInterface{
                     } else {
                         result= "Ход недопустим\n";
                     }
-                    result = result + printGamingField(result);
+                    result = result + printGamingField();
                 } else {
                     winner = player ? 1 : 2; //если текущий игрок O то победили X иначе победили O
                     result = "Игра завершена. У вас нет допустимых ходов. \n Вы проиграли.";
@@ -101,8 +101,8 @@ public class Game implements GameInterface{
         return game_ended;
     }
 
-    @Override
-    public String printGamingField(String result) throws RemoteException {
+    public String printGamingField() throws RemoteException {
+        String result = "";
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 if (j == 0)
@@ -125,10 +125,6 @@ public class Game implements GameInterface{
 
     public boolean isGame_started(){
         return game_started;
-    }
-
-    public PlayingField[][] getPlayingField(){
-        return playing_field;
     }
 
     //проверка доступности хода

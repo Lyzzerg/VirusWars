@@ -8,8 +8,8 @@ import java.rmi.RemoteException;
  */
 public class Printer implements PrintingInterface {
     @Override
-    public String printGamingField(String result) throws RemoteException {
+    public void printGamingField(String result) throws RemoteException {
         System.out.println(result);
-        return null;
+        System.out.println("Введите ход");
     }
 }

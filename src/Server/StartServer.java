@@ -62,7 +62,7 @@ public class StartServer extends Start {
                 }
                 my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
                 System.out.println(game1.turn(my_turn, MY_PLAYER));
-                toClientPrinter.printGamingField(game1.printGamingField(new String()));
+                toClientPrinter.printGamingField(game1.printGamingField());
             }
 
         } catch (Exception e) {
