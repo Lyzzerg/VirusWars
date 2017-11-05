@@ -2,29 +2,19 @@ package Client;
 
 import General.Field;
 import General.GameInterface;
+import General.Start;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Евгений on 04.11.2017.
  */
-public class StartClient {
+public class StartClient extends Start{
 
     private static boolean MY_PLAYER = true;
 
-    private static boolean checkwithregexp(String turn_){
-        Pattern p = Pattern.compile("[0-9][a-j]");
-        Matcher m = p.matcher(turn_);
-        return m.matches();
-    }
-    private static boolean checkwithregexp2(String turn_){
-        Pattern p = Pattern.compile("concede");
-        Matcher m = p.matcher(turn_);
-        return m.matches();
-    }
     private static void print_field(){
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
@@ -57,10 +47,10 @@ public class StartClient {
                 System.out.println("Введите ход:");
                 do {
                     turn = in.nextLine();
-                    if (!checkwithregexp(turn) && !checkwithregexp2(turn))
+                    if (!isTurnCorrect(turn) && !isConcede(turn))
                         System.out.println("Неверный ход. Введите ход снова:");
-                } while (!checkwithregexp(turn) && !checkwithregexp2(turn));
-                if (checkwithregexp2(turn)) {
+                } while (!isTurnCorrect(turn) && !isConcede(turn));
+                if (isConcede(turn)) {
                     System.out.println(game1.concede(MY_PLAYER));
                     break; //конец игры если сдался
                 } else {
