@@ -27,11 +27,15 @@ public class StartServer extends Start{
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind(serviceName, gameInterface);
 
+            while(!game1.isGame_started()){
+                Thread.sleep(1000);
+            }
+
             Field my_turn = new Field(0,0);
             Scanner in = new Scanner(System.in);
             String turn = "";
             printDefaultGameField();
-            while(true) {
+            while(!game1.isGameEnded()) {
                 System.out.println("Введите ход:");
                 do {
                     turn = in.nextLine();

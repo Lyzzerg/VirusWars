@@ -9,4 +9,6 @@ import java.rmi.RemoteException;
 public interface GameInterface extends Remote{
     String turn(Field field,boolean current_player) throws RemoteException;
     String concede(boolean current_player) throws RemoteException;
+    void startGame() throws RemoteException;
+    boolean isGameEnded() throws RemoteException;
 }

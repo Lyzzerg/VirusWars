@@ -23,11 +23,12 @@ public class StartClient extends Start{
         try{
             Registry registry = LocateRegistry.getRegistry(port);
             game1 = (GameInterface) registry.lookup(serviceName);
+            game1.startGame();
             Field my_turn = new Field(0,0);
             Scanner in = new Scanner(System.in);
             String turn = "";
             printDefaultGameField();
-            while(true) {
+            while(!game1.isGameEnded()) {
                 System.out.println("Введите ход:");
                 do {
                     turn = in.nextLine();

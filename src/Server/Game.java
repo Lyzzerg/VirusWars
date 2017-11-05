@@ -27,6 +27,8 @@ public class Game implements GameInterface{
         marked = new boolean [10][10];
         turn_number = 0;
         winner = 0;
+        game_started = false;
+        game_ended = false;
     }
 
     //сделать ход
@@ -80,6 +82,7 @@ public class Game implements GameInterface{
                 } else {
                     winner = player ? 1 : 2; //если текущий игрок O то победили X иначе победили O
                     result = "Игра завершена. У вас нет допустимых ходов. \n Вы проиграли.";
+                    game_ended = true;
                 }
             } else {
                 if (winner == 1 || winner == 2) {
@@ -104,14 +107,27 @@ public class Game implements GameInterface{
         return result;
     }
 
+    //начать игру
+    @Override
+    public void startGame() throws RemoteException {
+        game_started = true;
+    }
+
+    //проверка закончена ли игра
+    @Override
+    public boolean isGameEnded() throws RemoteException {
+        return game_ended;
+    }
+
+    public boolean isGame_started(){
+        return game_started;
+    }
     //проверка доступности хода
     private boolean find(Field field){
 
-        //нельзя ходить в уже занятые тобой клетки
-        if(playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state()==
-                (player ? O : X) ||
-                playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state()==
-                        (player ? XDESTRUCTED : ODESTRUCTED))
+        //нельзя ходить в уже занятые тобой клетки или убитые
+        int check_state = playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state();
+        if(check_state == (player ? O : X) || check_state == XDESTRUCTED || check_state == ODESTRUCTED)
             return false;
 
 
@@ -225,6 +241,8 @@ public class Game implements GameInterface{
     private static final int O = 1;
     private static final int XDESTRUCTED = 2;
     private static final int ODESTRUCTED = 3;
+    private boolean game_started;
+    private boolean game_ended;
     private PlayingField[][] playing_field; // Поле игры
     private boolean player; // Текущий игрок
     private boolean [][] marked;  //вспомогательное поле для поиска чейнов
