@@ -1,7 +1,6 @@
 package Server;
 
-import General.Field;
-import General.GameInterface;
+import General.*;
 
 import java.rmi.RemoteException;
 
@@ -10,7 +9,7 @@ import java.rmi.RemoteException;
  */
 public class Game implements GameInterface{
 
-    //Here's the Virus Wars Game Logic//
+    //Here's the Virus Wars Printer Logic//
 
     //создание игры
     Game() throws RemoteException { // Конструктор
@@ -61,23 +60,7 @@ public class Game implements GameInterface{
                     } else {
                         result= "Ход недопустим\n";
                     }
-                    for (int i = 0; i < 10; i++) {
-                        for (int j = 0; j < 10; j++) {
-                            if (j == 0)
-                                result = result + (i + " ");
-                            result = result + ("|" +
-                                    (playing_field[i][j].getCurrent_state() == X ? "X" :
-                                            (playing_field[i][j].getCurrent_state() == O ? "O" :
-                                                    (playing_field[i][j].getCurrent_state() == XDESTRUCTED ? "@" :
-                                                            (playing_field[i][j].getCurrent_state() == ODESTRUCTED ? "*" : " ")))));
-                        }
-                        result = result + "|\n";
-                    }
-                    result = result + "   ";
-                    for (int k = 0; k < 10; k++) {
-                        result = result +((char) (97 + k) + " ");
-                    }
-                    result = result +"\n";
+                    result = result + printGamingField(result);
                 } else {
                     winner = player ? 1 : 2; //если текущий игрок O то победили X иначе победили O
                     result = "Игра завершена. У вас нет допустимых ходов. \n Вы проиграли.";
@@ -118,9 +101,36 @@ public class Game implements GameInterface{
         return game_ended;
     }
 
+    @Override
+    public String printGamingField(String result) throws RemoteException {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (j == 0)
+                    result = result + (i + " ");
+                result = result + ("|" +
+                        (playing_field[i][j].getCurrent_state() == X ? "X" :
+                                (playing_field[i][j].getCurrent_state() == O ? "O" :
+                                        (playing_field[i][j].getCurrent_state() == XDESTRUCTED ? "@" :
+                                                (playing_field[i][j].getCurrent_state() == ODESTRUCTED ? "*" : " ")))));
+            }
+            result = result + "|\n";
+        }
+        result = result + "   ";
+        for (int k = 0; k < 10; k++) {
+            result = result +((char) (97 + k) + " ");
+        }
+        result = result +"\n";
+        return result;
+    }
+
     public boolean isGame_started(){
         return game_started;
     }
+
+    public PlayingField[][] getPlayingField(){
+        return playing_field;
+    }
+
     //проверка доступности хода
     private boolean find(Field field){
 
@@ -221,18 +231,6 @@ public class Game implements GameInterface{
     }
 
     //Переменные//
-    private class PlayingField {
-
-        private int current_state;
-
-        PlayingField() { current_state = CLEAR; }
-
-        public int getCurrent_state() { return current_state; }
-
-        public void setCurrent_state(int current_state) {
-            this.current_state = current_state;
-        }
-    }
 
     private static final boolean FIRST_PLAYER = false;
     private static final int CLEAR = -1;

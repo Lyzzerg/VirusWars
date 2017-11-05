@@ -1,35 +1,43 @@
 package Client;
 
-import General.Field;
-import General.GameInterface;
-import General.Start;
+import General.*;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 /**
  * Created by Евгений on 04.11.2017.
  */
-public class StartClient extends Start{
+public class StartClient extends Start {
 
     private static boolean MY_PLAYER = true;
 
     public static void main(String[] args){
 
         System.out.println("Client Started");
-        String serviceName = "rmi://localhost/GameInterface";
-        int port = Integer.parseInt("12345");
+        String serverServiceName = "rmi://localhost/GameInterface";
+        String clientServiceName = "rmi://localhost/PrintingInterface";
+        int port = 12345;
+        int port2 = 12346;
         GameInterface game1;
+        Printer printer;
         try{
             System.out.println("Connecting to server....");
 
-            //RMI
-            Registry registry = LocateRegistry.getRegistry(port);
-            game1 = (GameInterface) registry.lookup(serviceName);
+            //RMI Server
+            Registry server_registry = LocateRegistry.getRegistry(port);
+            game1 = (GameInterface) server_registry.lookup(serverServiceName);
             System.out.println("Connected");
             game1.startGame();
-            System.out.println("Game Started");
+            System.out.println("Printer Started");
+
+            //RMI Client registration
+            printer = new Printer();
+            PrintingInterface printingInterface = (PrintingInterface) UnicastRemoteObject.exportObject(printer,0);
+            Registry registry2 = LocateRegistry.createRegistry(port2);
+            registry2.rebind(clientServiceName, printingInterface);
 
             Field my_turn = new Field(0,0);
             Scanner in = new Scanner(System.in);
