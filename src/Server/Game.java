@@ -246,6 +246,11 @@ public class Game implements GameInterface {
     }
 
     @Override
+    public int getFieldState(Field field) throws RemoteException{
+        return playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state();
+    }
+
+    @Override
     public void printGamingField(String result) throws RemoteException {
         System.out.println(gamingFieldStatus());
         System.out.println("Введите ход:");

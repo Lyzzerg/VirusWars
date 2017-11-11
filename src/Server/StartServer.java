@@ -1,5 +1,6 @@
 package Server;
 
+import GUI.UI;
 import General.*;
 
 import java.rmi.registry.LocateRegistry;
@@ -49,6 +50,8 @@ public class StartServer extends DefaultMethods {
             Field my_turn = new Field(0,0);
             String turn = "";
             printDefaultGameField();
+            UI ui = new UI(MY_PLAYER);
+            ui.setVisible(true);
             while(!game1.isGameEnded()) {
                 System.out.println("Введите ход:");
                 do {
@@ -62,6 +65,7 @@ public class StartServer extends DefaultMethods {
                 }
                 my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
                 System.out.println(game1.turn(my_turn, MY_PLAYER));
+                ui.changeIcon(my_turn,game1.getFieldState(my_turn));
                 toClientPrinter.printGamingField(game1.gamingFieldStatus());
             }
 

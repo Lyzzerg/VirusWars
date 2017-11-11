@@ -11,4 +11,5 @@ public interface GameInterface extends Remote, PrintingInterface {
     String concede(boolean current_player) throws RemoteException;
     void startGame() throws RemoteException;
     boolean isGameEnded() throws RemoteException;
+    int getFieldState(Field field) throws RemoteException;
 }
