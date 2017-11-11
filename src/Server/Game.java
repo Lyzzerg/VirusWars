@@ -43,7 +43,7 @@ public class Game implements GameInterface {
                 }
                 if (you_can_turn) {
                     clearMarked();
-                    if (find(field)) {            //если у вас доступно 3 хода и ваш ход допустим
+                    if (find(field) && !isAlreadyBusy()) {            //если у вас доступно 3 хода и ваш ход допустим
                         int state = playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state();
                         switch (state) {
                             case CLEAR:
@@ -132,21 +132,24 @@ public class Game implements GameInterface {
         return game_started;
     }
 
-    //проверка доступности хода
-    private boolean find(Field field) {
-
-        //нельзя ходить в уже занятые тобой клетки или убитые
-        int check_state = playing_field[current_turn.getNumeric_field()][current_turn.getWord_field()].getCurrent_state();
-        if (check_state == (player ? O : X) || check_state == XDESTRUCTED || check_state == ODESTRUCTED)
-            return false;
-
-
+    //проверка на первый ход
+    private boolean isFirst_turn(){
         //первые ходы для каждого игрока
         if (first_player_first_turn && (current_turn.getNumeric_field() == 9 && current_turn.getWord_field() == 0)) {
             first_player_first_turn = false;
             return true;
         } else if (second_player_first_turn && (current_turn.getNumeric_field() == 0 && current_turn.getWord_field() == 9)) {
             second_player_first_turn = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //проверка доступности хода
+    private boolean find(Field field) {
+
+        if(isFirst_turn()){
             return true;
         }
 
@@ -220,6 +223,15 @@ public class Game implements GameInterface {
         } else{
             return false; //не найдено трёх допустимых ходов
         }
+    }
+
+
+    private boolean isAlreadyBusy(){
+        //нельзя ходить в уже занятые тобой клетки или убитые
+        int check_state = playing_field[current_turn.getNumeric_field()][current_turn.getWord_field()].getCurrent_state();
+        if (check_state == (player ? O : X) || check_state == XDESTRUCTED || check_state == ODESTRUCTED)
+            return true;
+        return false;
     }
 
     // Функция размножения
