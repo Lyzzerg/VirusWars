@@ -6,4 +6,4 @@ bin/*
 Start*
 orb.db/*
 src/GameInterfaceApp/*
-src/PrinInterfaceApp/*
+src/PrintingInterfaceApp/*

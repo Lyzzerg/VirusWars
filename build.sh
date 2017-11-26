@@ -4,6 +4,9 @@ rm -rf bin;
 
 mkdir bin;
 
+idlj -fall -td src/ src/GameInterface.idl;
+idlj -fall -td src/ src/PrintingInterface.idl;
+
 javac -sourcepath ./src -d bin src/Server/StartServer.java -Xlint:unchecked;
 javac -sourcepath ./src -d bin src/Client/StartClient.java -Xlint:unchecked;
 
