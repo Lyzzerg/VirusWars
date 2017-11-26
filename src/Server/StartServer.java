@@ -3,8 +3,6 @@ package Server;
 import GUI.UI;
 import GameInterfaceApp.GameInterface;
 import General.*;
-import java.util.Scanner;
-
 import GameInterfaceApp.*;
 import PrintingInterfaceApp.PrintingInterface;
 import PrintingInterfaceApp.PrintingInterfaceHelper;
@@ -16,28 +14,14 @@ import org.omg.PortableServer.POA;
 /**
  * Created by Евгений on 21.10.2017.
  */
-public class StartServer extends DefaultMethods {
+public class StartServer {
     private static final boolean MY_PLAYER = false;
     private static Game game1;
     private static PrintingInterface toClientPrinter;
     private static Printer serverPrinter;
-    private static Scanner in;
     private static ORB serverOrb;
-    private static ORB clientOrb;
-    //private static GameInterface gameInterface;
-    //private static Registry registry1, registry2;
-    //private static Printer serverPrinter;
-    //private static PrintingInterface toClientPrinter;
-    //private static PrintingInterface serverPrinterInterface;
 
     public static void main(String[] args) {
-        Connection connection = new Connection();
-
-        in = new Scanner(System.in);
-
-        //connection.ip_init(in);
-        //connection.port_init(in);
-        //connection.print_ports();
 
         System.out.println("Server Started");
         try {

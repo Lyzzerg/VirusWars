@@ -13,30 +13,22 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-import java.util.Scanner;
 
 /**
  * Created by Евгений on 04.11.2017.
  */
-public class StartClient extends DefaultMethods {
+public class StartClient {
     private static Printer clientPrinter;
     private static ORB clientOrb;
     private static GameInterface game1;
     private static PrintingInterface toServerPrinter;
-
 
     private static boolean MY_PLAYER = true;
 
     public static void main(String[] args){
 
         System.out.println("Client Started");
-
-        Scanner in = new Scanner(System.in);
         clientPrinter = new Printer();
-        //Connection connection = new Connection();
-        //connection.ip_init(in);
-        //connection.port_init(in);
-        //connection.print_ports();
 
         try{
             String[] orb_args = new String[6];
