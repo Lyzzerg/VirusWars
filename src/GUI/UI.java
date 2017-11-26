@@ -1,8 +1,8 @@
 package GUI;
 
+import GameInterfaceApp.GameInterface;
 import General.Field;
-import General.GameInterface;
-import General.PrintingInterface;
+import PrintingInterfaceApp.PrintingInterface;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -27,6 +27,7 @@ public class UI extends JFrame{
     private PrintingInterface printingInterface;
     private Container container;
     private JButton[][] fields;
+    private Label label;
     private boolean player;
 
     public UI(boolean Player, GameInterface gameInterface_, PrintingInterface printingInterface_) {
@@ -35,10 +36,12 @@ public class UI extends JFrame{
         this.setBounds(100,100,250,100);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         container = this.getContentPane();
-        container.setLayout(new GridLayout(10,10,2,2));
+        container.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
 
-        container = new JPanel();
+
         fields = new JButton[10][10];
+        label = new Label("ETO FIASKO BRATAN");
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
                 fields[i][j] = new JButton();
@@ -47,9 +50,18 @@ public class UI extends JFrame{
         }
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
-                this.add(fields[i][j]);
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
+                c.gridy = i;
+                c.gridx = j;
+                this.add(fields[i][j],c);
             }
         }
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 10;
+        c.gridx = 0;
+        c.gridy = 11;
+        this.add(label, c);
         this.pack();
         gameInterface = gameInterface_;
         printingInterface = printingInterface_;
@@ -114,10 +126,11 @@ public class UI extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             try{
-                int[] status = gameInterface.turn(new Field(i,j),player);
+                int[] status = gameInterface.turn(i,j,player);
                 changeIcon(new Field(status[0],status[1]), status[2]);
                 printingInterface.printGamingField(status);
-            } catch (RemoteException ex){
+                label.setText(gameInterface.getResult());
+            } catch (Exception ex){
                 ex.printStackTrace();
             }
         }

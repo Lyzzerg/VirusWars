@@ -1,0 +1,10 @@
+module GameInterfaceApp {
+  interface GameInterface {
+    typedef sequence<long> intArr;
+    intArr turn(in long fieldN, in long fieldW, in boolean current_player);
+    string concede(in boolean current_player);
+    string getResult();
+    void startGame();
+    boolean isGameEnded();
+    };
+};

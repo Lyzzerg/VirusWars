@@ -1,0 +1,6 @@
+module PrintingInterfaceApp{
+  interface PrintingInterface{
+    typedef sequence<long> intArr;
+    void printGamingField(in intArr status);
+  };
+};

@@ -1,20 +1,19 @@
 package Server;
 
 import General.*;
-
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
-
+import GameInterfaceApp.*;
+import org.omg.CORBA.*;
 /**
  * Created by Евгений on 21.10.2017.
  */
-public class Game implements GameInterface {
+public class Game extends GameInterfacePOA  {
 
     //Here's the Virus Wars Printer Logic//
 
     //создание игры
-    Game() throws RemoteException { // Конструктор
+    Game() { // Конструктор
         playing_field = new PlayingField[10][10]; // Создаём поле 10 на 10
         for (int i=0; i<10; i++) {
             for(int j=0; j<10; j++){
@@ -30,14 +29,15 @@ public class Game implements GameInterface {
         game_started = false;
         game_ended = false;
         current_turn = new Field(0,0);
+        result = "";
     }
 
     //сделать ход
-
-    public int[] turn(Field field, boolean current_player) throws RemoteException{
-        current_turn = field;
+    public int[] turn(int n, int w, boolean current_player){
+        current_turn = new Field(n,w);
+        Field field = current_turn;
         boolean you_can_turn = true;
-        String result ="";
+        String result_ = result;
         if(winner==0) {
             if (is_my_turn(current_player)) { //если ход текущего игрока
                 if (turn_number == 0) {
@@ -63,27 +63,26 @@ public class Game implements GameInterface {
                         }
 
                     } else {
-                        result= "Ход недопустим\n";
+                        result_= "You can not make such a move";
                     }
-                    result = result + gamingFieldStatus();
                 } else {
                     winner = player ? 1 : 2; //если текущий игрок O то победили X иначе победили O
-                    result = "Игра завершена. У вас нет допустимых ходов. \n Вы проиграли.";
+                    result_ = "The game is over. You do not have any valid moves. You lose.";
                     game_ended = true;
                 }
             } else {
                 if (winner == 1 || winner == 2) {
-                    result = "Игра завершена. У соперника нет допустимых ходов.\n Вы победили.";
+                    result_ = "The game is over. The opponent has no permissible moves. You won.";
                 } else
-                    result = "Сейчас не ваш ход";
+                    result_ = "Now is not your move";
             }
         } else{
-            result = "Игра завершена. Победитель: " + (winner==1 ? "X" : "O");
+            result_ = "The game is over. Winner: " + (winner==1 ? "X" : "O");
         }
-        System.out.println(result);
+        result = result_;
         int[] status = new int[3];
-        status[0] = field.getNumeric_field();
-        status[1] = field.getWord_field();
+        status[0] = n;
+        status[1] = w;
         status[2] = playing_field[status[0]][status[1]].getCurrent_state();
         return status;
     }
@@ -91,53 +90,39 @@ public class Game implements GameInterface {
     //сдаться
     @Override
     public String concede(boolean current_player){
-        String result = "Вы не можете сдаться не в свой ход";
+        String result = "You can not surrender. It's not your move";
         if(is_my_turn(current_player)) {
             winner = player ? 1 : 2;
-            result = "Игра завершена.\nИгрок " + (player ? "O" : "X ") + "признал своё поражение.";
+            result = "The game is over. Player " + (player ? "O" : "X ") + "acknowledged his defeat.";
         }
         game_ended = true;
         return result;
     }
 
+    @Override
+    public String getResult() {
+        return result;
+    }
+
     //начать игру
     @Override
-    public void startGame() throws RemoteException {
+    public void startGame(){
         game_started = true;
     }
 
     //проверка закончена ли игра
     @Override
-    public boolean isGameEnded() throws RemoteException {
+    public boolean isGameEnded(){
         return game_ended;
-    }
-
-    //получение текущего состояния поля
-    public String gamingFieldStatus() throws RemoteException {
-        String result = "";
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                if (j == 0)
-                    result = result + (i + " ");
-                result = result + ("|" +
-                        (playing_field[i][j].getCurrent_state() == X ? "X" :
-                                (playing_field[i][j].getCurrent_state() == O ? "O" :
-                                        (playing_field[i][j].getCurrent_state() == XDESTRUCTED ? "@" :
-                                                (playing_field[i][j].getCurrent_state() == ODESTRUCTED ? "*" : " ")))));
-            }
-            result = result + "|\n";
-        }
-        result = result + "   ";
-        for (int k = 0; k < 10; k++) {
-            result = result +((char) (97 + k) + " ");
-        }
-        result = result +"\n";
-        return result;
     }
 
     //проверка начала игры
     public boolean isGame_started(){
         return game_started;
+    }
+
+    public void setOrb(ORB orb_val){
+        orb=orb_val;
     }
 
     //проверка на первый ход
@@ -307,4 +292,6 @@ public class Game implements GameInterface {
     private int winner; //кто победитель
     private boolean first_player_first_turn;   //является ли данный ход первым для 1 игрока
     private boolean second_player_first_turn; //является ли данный ход первым для 2 игрока
+    private String result;
+    private ORB orb;
 }
