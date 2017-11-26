@@ -25,16 +25,8 @@ public class StartServer {
 
         System.out.println("Server Started");
         try {
-
-            String[] orb_args = new String[6];
-            orb_args[0] = "StartServer";
-            orb_args[1] = "-ORBInitialPort";
-            orb_args[2] = "1050";
-            orb_args[3] = "-ORBInitialHost";
-            orb_args[4] = "localhost";
-            orb_args[5] = "&";
             // Создаем и инициализируем экземпляр ORB
-            serverOrb = ORB.init(orb_args, null);
+            serverOrb = ORB.init(args, null);
 
             // Получаем доступ к Root POA и активируем POAManager
             POA rootpoa = POAHelper.narrow(serverOrb.resolve_initial_references("RootPOA"));

@@ -31,14 +31,7 @@ public class StartClient {
         clientPrinter = new Printer();
 
         try{
-            String[] orb_args = new String[6];
-            orb_args[0] = "StartServer";
-            orb_args[1] = "-ORBInitialPort";
-            orb_args[2] = "1050";
-            orb_args[3] = "-ORBInitialHost";
-            orb_args[4] = "localhost";
-            orb_args[5] = "&";
-            clientOrb = ORB.init(orb_args, null);
+            clientOrb = ORB.init(args, null);
 
             System.out.println("Connecting to server....");
             POA rootpoa = POAHelper.narrow(clientOrb.resolve_initial_references("RootPOA"));
