@@ -3,6 +3,7 @@ package Server;
 import GUI.UI;
 import General.*;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,27 +14,46 @@ import java.util.Scanner;
  */
 public class StartServer extends DefaultMethods {
     private static final boolean MY_PLAYER = false;
+    private static Game game1;
+    private static Scanner in;
+    private static GameInterface gameInterface;
+    private static Registry registry1, registry2;
+    private static PrintingInterface toClientPrinter;
 
+    public static int turn() throws RemoteException {
+        String turn;
+        Field my_turn = new Field(0,0);
+        do {
+            turn = in.nextLine();
+            if (!isTurnCorrect(turn) && !isConcede(turn))
+                System.out.println("Неверный ход. Введите ход снова:");
+        } while (!isTurnCorrect(turn) && !isConcede(turn));
+        if(isConcede(turn)){
+            System.out.println(game1.concede(MY_PLAYER));
+        }
+        my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
+        game1.turn(my_turn, MY_PLAYER);
+        toClientPrinter.printGamingField(game1.gamingFieldStatus());
+        return game1.getFieldState(my_turn);
+    }
 
     public static void main(String[] args) {
         Connection connection = new Connection();
 
-        Scanner in = new Scanner(System.in);
+        in = new Scanner(System.in);
 
         connection.ip_init(in);
         connection.port_init(in);
         connection.print_ports();
 
-        Game game1;
-        PrintingInterface toClientPrinter;
         System.out.println("Server Started");
         try {
             game1 = new Game();
 
             //RMI Server registration
 
-            GameInterface gameInterface = (GameInterface) UnicastRemoteObject.exportObject(game1, 0);
-            Registry registry1 = LocateRegistry.createRegistry(connection.getServerPort());
+            gameInterface = (GameInterface) UnicastRemoteObject.exportObject(game1, 0);
+            registry1 = LocateRegistry.createRegistry(connection.getServerPort());
             registry1.rebind(connection.getServerServiceName(), gameInterface);
 
             System.out.println("Waiting Opponent");
@@ -42,31 +62,15 @@ public class StartServer extends DefaultMethods {
             while(!game1.isGame_started()){
                 Thread.sleep(1000);
             }
-            Registry registry2 = LocateRegistry.getRegistry(connection.getClientPort());
+            registry2 = LocateRegistry.getRegistry(connection.getClientPort());
             toClientPrinter = (PrintingInterface) registry2.lookup(connection.getClientServiceName());
 
             System.out.println("Opponent Founded");
 
-            Field my_turn = new Field(0,0);
-            String turn = "";
             printDefaultGameField();
-            UI ui = new UI(MY_PLAYER);
+            UI ui = new UI(MY_PLAYER, game1);
             ui.setVisible(true);
             while(!game1.isGameEnded()) {
-                System.out.println("Введите ход:");
-                do {
-                    turn = in.nextLine();
-                    if (!isTurnCorrect(turn) && !isConcede(turn))
-                        System.out.println("Неверный ход. Введите ход снова:");
-                } while (!isTurnCorrect(turn) && !isConcede(turn));
-                if(isConcede(turn)){
-                    System.out.println(game1.concede(MY_PLAYER));
-                    break; //конец игры если сдался
-                }
-                my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
-                System.out.println(game1.turn(my_turn, MY_PLAYER));
-                ui.changeIcon(my_turn,game1.getFieldState(my_turn));
-                toClientPrinter.printGamingField(game1.gamingFieldStatus());
             }
 
         } catch (Exception e) {

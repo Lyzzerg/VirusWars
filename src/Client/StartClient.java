@@ -47,10 +47,10 @@ public class StartClient extends DefaultMethods {
             Field my_turn = new Field(0,0);
             String turn = "";
             printDefaultGameField();
-            UI ui = new UI(MY_PLAYER);
+            UI ui = new UI(MY_PLAYER, game1);
             ui.setVisible(true);
             while(!game1.isGameEnded()) {
-                System.out.println("Введите ход:");
+                /*System.out.println("Введите ход:");
                 do {
                     turn = in.nextLine();
                     if (!isTurnCorrect(turn) && !isConcede(turn))
@@ -63,8 +63,8 @@ public class StartClient extends DefaultMethods {
                     my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
                     System.out.println(game1.turn(my_turn,MY_PLAYER));
                     game1.printGamingField("");
-                    ui.changeIcon(my_turn, game1.getFieldState(my_turn));
-                }
+                    //ui.changeIcon(my_turn, game1.getFieldState(my_turn));
+                }*/
             }
         } catch (Exception e){
             System.out.println("Client cannot connect to the server");
