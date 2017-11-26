@@ -15,3 +15,5 @@
 
 **Выполнить клиента нужно командой**
 * *java StartClient -ORBInitialPort 1050 -ORBInitialHost localhost*
+
+**Более подробно [ТУТ](http://www.igce.comcor.ru/Dev_bach/java+corba.html)**
