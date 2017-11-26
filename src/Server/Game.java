@@ -34,7 +34,7 @@ public class Game implements GameInterface {
 
     //сделать ход
 
-    public int[][] turn(Field field, boolean current_player) throws RemoteException{
+    public int[] turn(Field field, boolean current_player) throws RemoteException{
         current_turn = field;
         boolean you_can_turn = true;
         String result ="";
@@ -81,12 +81,10 @@ public class Game implements GameInterface {
             result = "Игра завершена. Победитель: " + (winner==1 ? "X" : "O");
         }
         System.out.println(result);
-        int[][] status = new int[10][10];
-        for(int i=0; i<10; i++){
-            for(int j=0; j<10; j++){
-                status[i][j] = playing_field[i][j].getCurrent_state();
-            }
-        }
+        int[] status = new int[3];
+        status[0] = field.getNumeric_field();
+        status[1] = field.getWord_field();
+        status[2] = playing_field[status[0]][status[1]].getCurrent_state();
         return status;
     }
 
@@ -268,17 +266,6 @@ public class Game implements GameInterface {
     private void destruction(Field field) {
         playing_field[field.getNumeric_field()][field.getWord_field()].setCurrent_state(player ? XDESTRUCTED :
                 ODESTRUCTED);
-    }
-
-    @Override
-    public int getFieldState(Field field) throws RemoteException{
-        return playing_field[field.getNumeric_field()][field.getWord_field()].getCurrent_state();
-    }
-
-    @Override
-    public void printGamingField(String result) throws RemoteException {
-        System.out.println(gamingFieldStatus());
-        System.out.println("Введите ход:");
     }
 
     //очистка вспомогательного поля для поиска

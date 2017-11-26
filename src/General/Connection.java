@@ -8,30 +8,35 @@ import java.util.Scanner;
 public class Connection extends DefaultMethods{
     private static final int DEFAULT_SERVER_PORT = 48654;
     private static final int DEFAULT_CLIENT_PORT = 49001;
-    private static final String DEFAULT_SERVER_SERVICE_NAME = "rmi://localhost/GameInterface";
-    private static final String DEFAULT_CLIENT_SERVICE_NAME = "rmi://localhost/PrintingInterface";
+    private static final String DEFAULT_GAME_NAME = "rmi://localhost/GameInterface";
+    private static final String DEFAULT_PRINTING_NAME = "rmi://localhost/PrintingInterface";
 
-
-    private String serverServiceName = DEFAULT_SERVER_SERVICE_NAME;
-    private String clientServiceName = DEFAULT_CLIENT_SERVICE_NAME;
+    private String server_game_name = DEFAULT_GAME_NAME;
+    private String server_printing_name = DEFAULT_PRINTING_NAME;
+    private String client_printing_name = DEFAULT_PRINTING_NAME;
 
     int serverPort = DEFAULT_SERVER_PORT;
     int clientPort = DEFAULT_CLIENT_PORT;
 
-    public String getClientServiceName() {
-        return clientServiceName;
+    public String getClient_printing_name() {
+        return client_printing_name;
     }
 
-    public String getServerServiceName() {
-        return serverServiceName;
+    public String getServer_game_name() {
+        return server_game_name;
+    }
+
+    public String getServer_printing_name() {
+        return server_printing_name;
     }
 
     public void changeServerIP(String IP) {
-        this.serverServiceName = "rmi://"+IP+"/GameInterface";
+        this.server_game_name = "rmi://"+IP+"/GameInterface";
+        this.server_printing_name = "rmi://"+IP+"/PrintingInterface";
     }
 
     public void changeClientIP(String IP) {
-        this.clientServiceName = "rmi://"+IP+"/PrintingInterface";
+        this.client_printing_name = "rmi://"+IP+"/PrintingInterface";
     }
 
     public int getClientPort() {

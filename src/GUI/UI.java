@@ -2,6 +2,7 @@ package GUI;
 
 import General.Field;
 import General.GameInterface;
+import General.PrintingInterface;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
-import static Server.StartServer.turn;
 
 /**
  * Created by Евгений on 11.11.2017.
@@ -24,11 +24,12 @@ public class UI extends JFrame{
     private static final int ODESTRUCTED = 3;
 
     private GameInterface gameInterface;
+    private PrintingInterface printingInterface;
     private Container container;
     private JButton[][] fields;
     private boolean player;
 
-    public UI(boolean Player, GameInterface gameInterface_) {
+    public UI(boolean Player, GameInterface gameInterface_, PrintingInterface printingInterface_) {
         super((Player ? "Second":"First") +" Player");
         player = Player;
         this.setBounds(100,100,250,100);
@@ -51,6 +52,7 @@ public class UI extends JFrame{
         }
         this.pack();
         gameInterface = gameInterface_;
+        printingInterface = printingInterface_;
     }
 
     public void changeIcon(Field field, int type){
@@ -112,12 +114,9 @@ public class UI extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             try{
-                int[][] status = gameInterface.turn(new Field(i,j),player);
-                for(int k=0; k<10; k++){
-                    for(int m=0; m<10; m++){
-                        changeIcon(new Field(k,m),status[k][m]);
-                    }
-                }
+                int[] status = gameInterface.turn(new Field(i,j),player);
+                changeIcon(new Field(status[0],status[1]), status[2]);
+                printingInterface.printGamingField(status);
             } catch (RemoteException ex){
                 ex.printStackTrace();
             }

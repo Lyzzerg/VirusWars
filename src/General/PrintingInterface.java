@@ -7,5 +7,5 @@ import java.rmi.RemoteException;
  * Created by Евгений on 05.11.2017.
  */
 public interface PrintingInterface extends Remote {
-    void printGamingField(String result) throws RemoteException;
+    void printGamingField(int[] status) throws RemoteException;
 }

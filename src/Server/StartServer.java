@@ -18,24 +18,9 @@ public class StartServer extends DefaultMethods {
     private static Scanner in;
     private static GameInterface gameInterface;
     private static Registry registry1, registry2;
+    private static Printer serverPrinter;
     private static PrintingInterface toClientPrinter;
-
-    public static int turn() throws RemoteException {
-        String turn;
-        Field my_turn = new Field(0,0);
-        do {
-            turn = in.nextLine();
-            if (!isTurnCorrect(turn) && !isConcede(turn))
-                System.out.println("Неверный ход. Введите ход снова:");
-        } while (!isTurnCorrect(turn) && !isConcede(turn));
-        if(isConcede(turn)){
-            System.out.println(game1.concede(MY_PLAYER));
-        }
-        my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
-        game1.turn(my_turn, MY_PLAYER);
-        toClientPrinter.printGamingField(game1.gamingFieldStatus());
-        return game1.getFieldState(my_turn);
-    }
+    private static PrintingInterface serverPrinterInterface;
 
     public static void main(String[] args) {
         Connection connection = new Connection();
@@ -49,12 +34,15 @@ public class StartServer extends DefaultMethods {
         System.out.println("Server Started");
         try {
             game1 = new Game();
+            serverPrinter = new Printer();
 
             //RMI Server registration
-
             gameInterface = (GameInterface) UnicastRemoteObject.exportObject(game1, 0);
+            serverPrinterInterface = (PrintingInterface) UnicastRemoteObject.exportObject(serverPrinter,0);
+
             registry1 = LocateRegistry.createRegistry(connection.getServerPort());
-            registry1.rebind(connection.getServerServiceName(), gameInterface);
+            registry1.rebind(connection.getServer_game_name(), gameInterface);
+            registry1.rebind(connection.getServer_printing_name(), serverPrinter);
 
             System.out.println("Waiting Opponent");
 
@@ -63,16 +51,16 @@ public class StartServer extends DefaultMethods {
                 Thread.sleep(1000);
             }
             registry2 = LocateRegistry.getRegistry(connection.getClientPort());
-            toClientPrinter = (PrintingInterface) registry2.lookup(connection.getClientServiceName());
+            toClientPrinter = (PrintingInterface) registry2.lookup(connection.getClient_printing_name());
 
             System.out.println("Opponent Founded");
 
             printDefaultGameField();
-            UI ui = new UI(MY_PLAYER, game1);
+            UI ui = new UI(MY_PLAYER, game1, toClientPrinter);
             ui.setVisible(true);
+            serverPrinter.setUi(ui);
             while(!game1.isGameEnded()) {
             }
-
         } catch (Exception e) {
             System.out.println("Server cannot create the game");
             e.printStackTrace();

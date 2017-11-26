@@ -12,6 +12,10 @@ import java.util.Scanner;
  * Created by Евгений on 04.11.2017.
  */
 public class StartClient extends DefaultMethods {
+    private static Registry registry1, registry2;
+    private static Printer clientPrinter;
+    private static PrintingInterface clientPrinterInterface;
+    private static PrintingInterface toServerPrinter;
 
     private static boolean MY_PLAYER = true;
 
@@ -20,10 +24,9 @@ public class StartClient extends DefaultMethods {
         System.out.println("Client Started");
 
         Scanner in = new Scanner(System.in);
+        clientPrinter = new Printer();
         Connection connection = new Connection();
         GameInterface game1;
-        Printer printer;
-
         connection.ip_init(in);
         connection.port_init(in);
         connection.print_ports();
@@ -32,39 +35,23 @@ public class StartClient extends DefaultMethods {
             System.out.println("Connecting to server....");
 
             //RMI Server
-            Registry server_registry = LocateRegistry.getRegistry(connection.getServerPort());
-            game1 = (GameInterface) server_registry.lookup(connection.getServerServiceName());
+            registry1 = LocateRegistry.getRegistry(connection.getServerPort());
+            game1 = (GameInterface) registry1.lookup(connection.getServer_game_name());
+            toServerPrinter = (PrintingInterface) registry1.lookup(connection.getServer_printing_name());
             System.out.println("Connected");
             game1.startGame();
             System.out.println("Printer Started");
 
             //RMI Client registration
-            printer = new Printer();
-            PrintingInterface printingInterface = (PrintingInterface) UnicastRemoteObject.exportObject(printer,0);
-            Registry registry2 = LocateRegistry.createRegistry(connection.getClientPort());
-            registry2.rebind(connection.getClientServiceName(), printingInterface);
+            clientPrinterInterface = (PrintingInterface) UnicastRemoteObject.exportObject(clientPrinter,0);
+            registry2 = LocateRegistry.createRegistry(connection.getClientPort());
+            registry2.rebind(connection.getClient_printing_name(), clientPrinterInterface);
 
-            Field my_turn = new Field(0,0);
-            String turn = "";
             printDefaultGameField();
-            UI ui = new UI(MY_PLAYER, game1);
+            UI ui = new UI(MY_PLAYER, game1, toServerPrinter);
+            clientPrinter.setUi(ui);
             ui.setVisible(true);
             while(!game1.isGameEnded()) {
-                /*System.out.println("Введите ход:");
-                do {
-                    turn = in.nextLine();
-                    if (!isTurnCorrect(turn) && !isConcede(turn))
-                        System.out.println("Неверный ход. Введите ход снова:");
-                } while (!isTurnCorrect(turn) && !isConcede(turn));
-                if (isConcede(turn)) {
-                    System.out.println(game1.concede(MY_PLAYER));
-                    break; //конец игры если сдался
-                } else {
-                    my_turn.changeField(turn.charAt(0) - 48, turn.charAt(1) - 97);
-                    System.out.println(game1.turn(my_turn,MY_PLAYER));
-                    game1.printGamingField("");
-                    //ui.changeIcon(my_turn, game1.getFieldState(my_turn));
-                }*/
             }
         } catch (Exception e){
             System.out.println("Client cannot connect to the server");
