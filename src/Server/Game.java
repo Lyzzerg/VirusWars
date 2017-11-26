@@ -3,6 +3,8 @@ package Server;
 import General.*;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Евгений on 21.10.2017.
@@ -31,8 +33,8 @@ public class Game implements GameInterface {
     }
 
     //сделать ход
-    @Override
-    public String turn(Field field, boolean current_player) throws RemoteException{
+
+    public int[] turn(Field field, boolean current_player) throws RemoteException{
         current_turn = field;
         boolean you_can_turn = true;
         String result ="";
@@ -78,7 +80,12 @@ public class Game implements GameInterface {
         } else{
             result = "Игра завершена. Победитель: " + (winner==1 ? "X" : "O");
         }
-        return result;
+        System.out.println(result);
+        int[] status = new int[3];
+        status[0] = field.getNumeric_field();
+        status[1] = field.getWord_field();
+        status[2] = playing_field[status[0]][status[1]].getCurrent_state();
+        return status;
     }
 
     //сдаться
@@ -89,6 +96,7 @@ public class Game implements GameInterface {
             winner = player ? 1 : 2;
             result = "Игра завершена.\nИгрок " + (player ? "O" : "X ") + "признал своё поражение.";
         }
+        game_ended = true;
         return result;
     }
 
@@ -202,7 +210,7 @@ public class Game implements GameInterface {
 
     //проверка количества наличия 3 допустимых ходов
     private boolean can_turn(){
-        int turns=0;
+        List<Field> free_fields = new LinkedList<>();
 
         if(player ? second_player_first_turn : first_player_first_turn) //можно ходить если это первый ход
             return true;
@@ -212,19 +220,34 @@ public class Game implements GameInterface {
                 if(playing_field[i][j].getCurrent_state()==CLEAR ||
                         playing_field[i][j].getCurrent_state()==(player ? X : O)){ //можем ли мы найти 3 допустимых хода
                     if(find(new Field(i,j)))
-                        turns++;
+                        free_fields.add(new Field(i,j));
                 }
             }
         }
-
-
-        if(turns>=3){
-            return true; //три допустимых хода найдено
-        } else{
-            return false; //не найдено трёх допустимых ходов
-        }
+        return find_three_steps(free_fields, free_fields.size());
     }
 
+    private boolean find_three_steps(List<Field> free_fields, int steps){
+        if (steps >= 3) {
+            return true;
+        } else if(steps == 0) {
+            return false;
+        }
+        Field field = free_fields.get(free_fields.size()-1);
+        free_fields.remove(free_fields.size()-1);
+        for(int i=0; i<3; i++){
+            for (int j=0;j<3; j++){
+                int tempi = field.getNumeric_field()-1+i;
+                int tempj = field.getWord_field()-1+j;
+                if (tempi < 10 && tempi > -1 && tempj < 10 && tempj > -1) { //если не вышли за пределы игрового поля
+                    if(playing_field[tempi][tempj].getCurrent_state() == CLEAR){
+                        free_fields.add(new Field(tempi,tempj));
+                    }
+                }
+            }
+        }
+        return find_three_steps(free_fields, free_fields.size());
+    }
 
     private boolean isAlreadyBusy(){
         //нельзя ходить в уже занятые тобой клетки или убитые
@@ -243,12 +266,6 @@ public class Game implements GameInterface {
     private void destruction(Field field) {
         playing_field[field.getNumeric_field()][field.getWord_field()].setCurrent_state(player ? XDESTRUCTED :
                 ODESTRUCTED);
-    }
-
-    @Override
-    public void printGamingField(String result) throws RemoteException {
-        System.out.println(gamingFieldStatus());
-        System.out.println("Введите ход:");
     }
 
     //очистка вспомогательного поля для поиска
