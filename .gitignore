@@ -2,3 +2,8 @@
 *.xml
 *.iml
 out/*
+bin/*
+Start*
+orb.db/*
+src/GameInterfaceApp/*
+src/PrinInterfaceApp/*
